@@ -163,7 +163,7 @@ Distributed under the MIT License. See `LICENSE` for more information.
 
 ## Contact
 
-- **Your Name** - [Harsh Chhachhia](mailto:harshchhachhia008@gmail.com)
-- **Project Link:** [https://github.com/Harsh-710/MeTube-API](https://github.com/Harsh-710/MeTube-API)
+- **Name** - [Harsh Chhachhia](mailto:harshchhachhia008@gmail.com)
+- **Project Link:** [MeTube-API](https://github.com/Harsh-710/MeTube-API)
 
 ---

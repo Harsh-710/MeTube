@@ -505,6 +505,9 @@ const deleteUserAccount = asyncHandler(async (req, res) => {
         throw new ApiError(400, "Invalid password");
     }
 
+    await deleteFromCloudinary(user.avatar);
+    await deleteFromCloudinary(user.coverImage);
+
     const deletedUser = await User.findByIdAndDelete(user._id);
     if (!deletedUser) {
         throw new ApiError(

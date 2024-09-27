@@ -54,7 +54,8 @@ const deleteFromCloudinary = async (url) => {
         // console.log("File deleted successfully from Cloudinary:", response);
         return response;
     } catch (error) {
-        throw new ApiError(500, "Error deleting file from Cloudinary: ", error);
+        console.log("Error deleting file from Cloudinary: ", error);
+        return null;
     }
 };
 
