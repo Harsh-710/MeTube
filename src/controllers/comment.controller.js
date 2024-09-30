@@ -8,6 +8,26 @@ import {asyncHandler} from "../utils/asyncHandler.js"
 const getVideoComments = asyncHandler(async (req, res) => {
     const {videoId} = req.params
     const {page = 1, limit = 10} = req.query
+
+    if(!videoId || !isValidObjectId(videoId)){
+        throw new ApiError(400, "Invalid video id");
+    }
+
+    if(!req.user || !req.user._id){
+        throw new ApiError(401, "Unauthorized");
+    }
+
+    const comments = await Comment.find({video: videoId})
+        .populate("owner")
+        .sort({createdAt: -1})
+        .skip((page - 1) * limit)
+        .limit(limit)
+
+    if(!comments){
+        throw new ApiError(404, "No comments found");
+    }
+
+    return res.status(200).json(new ApiResponse(200, comments, "Comments retrieved successfully"));
 })
 
 // add a comment to a video

@@ -10,23 +10,59 @@ import {deleteFromCloudinary, uploadOnCloudinary} from "../utils/cloudinary.js"
 //get all videos based on query, sort, pagination
 const getAllVideos = asyncHandler(async (req, res) => {
     const { page = 1, limit = 10, query, sortBy, sortType, userId } = req.query
-    const options = {
-        page: parseInt(page, 10),
-        limit: parseInt(limit, 10),
-        sort: sortBy && sortType ? { [sortBy]: sortType } : { createdAt: "desc" }
+
+    if(!query || !userId || !isValidObjectId(userId)){
+        throw new ApiError(400, "Please provide query and userId");
     }
 
-    let queryOptions = {}
-    if(query) {
-        queryOptions.title = { $regex: query, $options: "i" }
-    }
-    if(userId && isValidObjectId(userId)){
-        queryOptions.owner = userId
-    }
+    const videos = await Video.aggregate([
+        {
+            $match: {
+                $or: [
+                    { title: { $regex: query || "", $options: "i" }},
+                    { description: {$regex: query || "", $options: "i" }}
+                ]
+            }
+        },
+        {
+            $lookup: {
+                from: "users",
+                localField: "owner",
+                foreignField: "_id",
+                as: "owner"
+            }
+        },
+        {
+            $unwind: "$owner"
+        },
+        {
+            $project:{
+                thumbnail:1,
+                videoFile:1,
+                title:1,
+                description:1,
+                owner:{
+                    fullName:1,
+                    userName:1,
+                    avatar:1
+                }
+            }
+        },
+        {
+            $sort: {
+                [sortBy || "createdAt"]: sortType === "asc" ? 1 : -1
+            }
+        },
+        {
+            $skip: (page - 1) * limit
+        },
+        {
+            $limit: parseInt(limit)
+        }
+    ])
 
-    const videos = await Video.aggregatePaginate(queryOptions, options)
     if(!videos){
-        throw new ApiError(404, "No videos found")
+        throw new ApiError(404, "No videos found");
     }
 
     return res.status(200).json(new ApiResponse(200, videos, "Videos retrieved successfully"))
