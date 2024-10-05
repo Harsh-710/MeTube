@@ -1,4 +1,4 @@
-import {isValidObjectId} from "mongoose"
+import mongoose, {isValidObjectId} from "mongoose"
 import {Like} from "../models/like.model.js"
 import {ApiError} from "../utils/ApiError.js"
 import {ApiResponse} from "../utils/ApiResponse.js"
@@ -93,6 +93,61 @@ const toggleTweetLike = asyncHandler(async (req, res) => {
 
 //get all liked videos
 const getLikedVideos = asyncHandler(async (req, res) => {
+    if(!req.user || !req.user._id){
+        throw new ApiError(401, "Unauthorized");
+    }
+
+    // const likedVideos = await Like.find({ owner: req.user._id, video: { $ne: null } }).populate("video");
+
+    const likedVideos = await Like.aggregate([
+        {
+            $match: { owner: new mongoose.Types.ObjectId(req.user._id), video: { $ne: null } }
+        },
+        {
+            $lookup: {
+                from: "videos",
+                localField: "video",
+                foreignField: "_id",
+                as: "video"
+            }
+        },
+        {
+            $unwind: "$video"
+        },
+        {
+            $lookup: {
+                from: "users",
+                localField: "video.owner",
+                foreignField: "_id",
+                as: "videoOwner"
+            }
+        },
+        {
+            $unwind: "$videoOwner"
+        },
+        {
+            $project: {
+                title: "$video.title",
+                description: "$video.description",
+                videoFile: "$video.videoFile",
+                thumbnail: "$video.thumbnail",
+                duration: "$video.duration",
+                views: "$video.views",
+                isPublished: "$video.isPublished",
+                videoOwner: {
+                    fullname: "$videoOwner.fullname",
+                    username: "$videoOwner.username",
+                    avatar: "$videoOwner.avatar"
+                }
+            }
+        }
+    ])
+
+    if(!likedVideos){
+        throw new ApiError(500, "Error fetching liked videos. Please try again");
+    }
+
+    return res.status(200).json(new ApiResponse(200, likedVideos, "Liked videos fetched successfully"));
 })
 
 export {
