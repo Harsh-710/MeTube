@@ -73,7 +73,7 @@ Ensure you have the following installed:
 
 ## API Endpoints
 
-### 1. **User Authentication**
+### 1. **User Routes**
 
 - **POST** `/api/v1/users/register`
   - Register a new user with secure password hashing.
@@ -111,6 +111,124 @@ Ensure you have the following installed:
 
 - **DELETE** `/api/v1/users/delete-account`
   - Deletes user account.
+
+
+### 2. **Video Routes**
+
+- **GET** `/api/v1/videos`
+  - Gets all videos based on query, sort and pagination.
+
+- **POST** `/api/v1/videos`
+  - Upload a video.
+
+- **GET** `/api/v1/videos/:videoId`
+  - Gets a video by id.
+
+- **PATCH** `/api/v1/videos/:videoId`
+  - Updates the video.
+
+- **DELETE** `/api/v1/videos/:videoId`
+  - Deletes the video.
+
+- **PATCH** `/api/v1/videos/toggle-publish/:videoId`
+  - Toggles publish status.
+
+
+### 3. **Playlist Routes**
+
+- **POST** `/api/v1/playlist`
+  - Creates a playlist.
+
+- **GET** `/api/v1/playlist/:playlistId`
+  - Gets a playlist by id.
+
+- **PATCH** `/api/v1/playlist/:playlistId`
+  - Updates the playlist.
+
+- **DELETE** `/api/v1/playlist/:playlistId`
+  - Deletes the playlist.
+
+- **PATCH** `/api/v1/playlist/add/:videoId/:playlistId`
+  - Adds video to the playlist.
+
+- **PATCH** `/api/v1/playlist/remove/:videoId/:playlistId`
+  - Removes video form playlist.
+
+- **GET** `/api/v1/playlist/user-playlists"`
+  - Gets all user playlists.
+
+
+### 4. **Dashboard Routes**
+
+- **GET** `/api/v1/dashboard/stats`
+  - Get channel stats.
+
+- **GET** `/api/v1/dashboard/videos`
+  - Get channel videos.
+
+
+### 5. **Healthcheck Routes**
+
+- **GET** `/api/v1/healthcheck`
+  - Healthcheck route.
+
+
+### 6. **Comment Routes**
+
+- **GET** `/api/v1/comments/:videoId`
+  - Get video comments.
+
+- **POST** `/api/v1/comments/:videoId`
+  - Post comment on a video.
+
+- **PATCH** `/api/v1/comments/c/:commentId`
+  - Update a comment.
+
+- **DELETE** `/api/v1/comments/c/:commentId`
+  - Delete a comment.
+
+
+### 7. **Like Routes**
+
+- **GET** `/api/v1/likes/liked-videos`
+  - Gets liked videos.
+
+- **POST** `/api/v1/likes/toggle/v/:videoId`
+  - Toggles video like.
+
+- **POST** `/api/v1/likes/toggle/c/:commentId`
+  - Toggles comment like.
+
+- **POST** `/api/v1/likes/toggle/t/:tweetId`
+  - Toggles tweet like.
+
+
+### 8. **Subscription Routes**
+
+- **GET** `/api/v1/subscriptions/c/:channelId`
+  - Get channels subscribed by the user.
+
+- **POST** `/api/v1/subscriptions/c/:channelId`
+  - Toggle subscription of a channel.
+
+- **GET** `/api/v1/subscriptions/u/:subscriberId`
+  - Get channels subscribed to user.
+
+
+### 9. **Tweet Routes**
+
+- **POST** `/api/v1/tweets`
+  - Create a tweet.
+
+- **GET** `/api/v1/tweets/user-tweets`
+  - Get all user tweets.
+
+- **PATCH** `/api/v1/tweets/:tweetId`
+  - Update a tweet.
+
+- **DELETE** `/api/v1/tweets/:tweetId`
+  - Delete a tweet.
+
 
 ## Built With
 
